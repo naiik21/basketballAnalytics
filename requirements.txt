@@ -1,0 +1,8 @@
+torch>=2.0.0
+supervision>=0.16.0
+numpy>=1.23.0
+opencv-python>=4.7.0
+tqdm>=4.65.0
+python-dotenv>=1.0.0
+scikit-learn>=1.2.0
+inference-sdk>=0.9.12
