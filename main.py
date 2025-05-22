@@ -103,11 +103,7 @@ def main():
             # Anotación del frame
             annotated_frame = frame.copy()
             annotated_frame = annotator.annotate_frame(
-                annotated_frame, 
-                detections, 
-                handler_detections, 
-                zones, 
-                ball_in_hoop
+                annotated_frame, detections, labels, hoop_detections, ball_in_hoop, zones
             )
             
             video_sink.write_frame(annotated_frame)

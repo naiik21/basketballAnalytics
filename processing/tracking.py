@@ -13,6 +13,9 @@ class ObjectTracker:
     def filter_detections(self, detections, class_id):
         return detections[detections.class_id == class_id]
     
+    def filter_detections_different(self, detections, class_id):
+        return detections[detections.class_id != class_id]
+    
     def pad_boxes(self, detections, padding=10):
         detections.xyxy = sv.pad_boxes(xyxy=detections.xyxy, px=padding)
         return detections
@@ -29,9 +32,8 @@ class BasketballTracker(ObjectTracker):
         hoop_detections = self.filter_detections(detections, settings.HOOP_ID)
         hoop_detections = self.pad_boxes(hoop_detections)
         
-        other_detections = self.filter_detections(
-            detections, 
-            [settings.PLAYER_ID, settings.REFEREE_ID]
+        other_detections = self.filter_detections_different(
+            detections, settings.BALL_ID
         )
         other_detections = self.update_detections(other_detections)
         

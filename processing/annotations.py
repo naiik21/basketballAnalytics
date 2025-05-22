@@ -36,6 +36,33 @@ class Annotator:
         self.corner_annotator_true = sv.BoxCornerAnnotator(
             color=sv.Color.from_hex('#00913F'),
         )
+        
+    def annotate_frame(self, annotated_frame, detections, labels, hoop_detections, ball_in_hoop, zones):
+        annotated_frame = self.ellipse_annotator.annotate(
+            scene=annotated_frame,
+            detections=detections)
+        annotated_frame = self.label_annotator.annotate(
+            scene=annotated_frame,
+            detections=detections,
+            labels=labels)
+        annotated_frame = self.triangle_annotator.annotate(
+            scene=annotated_frame,
+            detections=detections)
+        
+        if ball_in_hoop:
+            annotated_frame = self.corner_annotator_true.annotate(
+                scene=annotated_frame,
+                detections=hoop_detections)
+        else:
+            annotated_frame = self.corner_annotator.annotate(
+                scene=annotated_frame,
+                detections=hoop_detections)
+        
+        annotated_frame = self.mask_annotator.annotate(
+            scene=annotated_frame,
+            detections=zones)
+        
+        return annotated_frame
     
     def draw_nba_style_text(self, frame, text, center_x=None, center_y=None):
         """Dibuja texto estilo NBA con animaciones y efectos visuales."""
