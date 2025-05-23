@@ -19,11 +19,6 @@ class Annotator:
             color=sv.ColorPalette.from_hex([Colors.TEAM_A, Colors.TEAM_B, Colors.REFEREE]),
             thickness=2
         )
-        self.label_annotator = sv.LabelAnnotator(
-            color=sv.ColorPalette.from_hex([Colors.TEAM_A, Colors.TEAM_B, Colors.REFEREE]),
-            text_color=sv.Color.from_hex('#000000'),
-            text_position=sv.Position.BOTTOM_CENTER
-        )
         self.triangle_annotator = sv.TriangleAnnotator(
             color=sv.Color.from_hex(Colors.BALL),
             base=25,
@@ -37,19 +32,16 @@ class Annotator:
             color=sv.Color.from_hex('#00913F'),
         )
         
-    def annotate_frame(self, annotated_frame, detections, labels, hoop_detections, ball_in_hoop, zones):
+    def annotate_frame(self, annotated_frame, all_detections, ball_detections, zones, hoop_detections, esta_dentro):
         annotated_frame = self.ellipse_annotator.annotate(
             scene=annotated_frame,
-            detections=detections)
-        annotated_frame = self.label_annotator.annotate(
-            scene=annotated_frame,
-            detections=detections,
-            labels=labels)
+            detections=all_detections)
         annotated_frame = self.triangle_annotator.annotate(
             scene=annotated_frame,
-            detections=detections)
+            detections=ball_detections)
         
-        if ball_in_hoop:
+        
+        if esta_dentro:
             annotated_frame = self.corner_annotator_true.annotate(
                 scene=annotated_frame,
                 detections=hoop_detections)
@@ -57,12 +49,11 @@ class Annotator:
             annotated_frame = self.corner_annotator.annotate(
                 scene=annotated_frame,
                 detections=hoop_detections)
-        
+
+
         annotated_frame = self.mask_annotator.annotate(
             scene=annotated_frame,
             detections=zones)
-        
-        return annotated_frame
     
     def draw_nba_style_text(self, frame, text, center_x=None, center_y=None):
         """Dibuja texto estilo NBA con animaciones y efectos visuales."""

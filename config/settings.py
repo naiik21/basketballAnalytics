@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import torch
 
 load_dotenv()
 
@@ -16,6 +17,14 @@ class Settings:
     HOOP_ID = 2
     PLAYER_ID = 4
     REFEREE_ID = 5
+    
+    device = (
+    "cuda"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
     
     @property
     def ROBOFLOW_API_KEY(self):

@@ -5,7 +5,7 @@ class DetectionModel:
     def __init__(self, model_id, api_key=settings.ROBOFLOW_API_KEY):
         self.model = get_model(model_id=model_id, api_key=api_key)
     
-    def infer(self, frame, confidence=0.3, device="cuda"):
+    def infer(self, frame, confidence=0.3, device=settings.device):
         return self.model.infer(frame, confidence=confidence, device=device)
 
 class PlayerDetectionModel(DetectionModel):

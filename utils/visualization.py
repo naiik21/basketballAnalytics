@@ -16,7 +16,7 @@ def setup_video_sources(source_path, target_path, stride=None):
     
     return video_info, video_sink, frame_generator
 
-def collect_player_crops(frame_generator, model, device="cuda"):
+def collect_player_crops(frame_generator, model, device=settings.device):
     crops = []
     for frame in frame_generator:
         result = model.infer(frame, device=device, confidence=0.3)[0]
