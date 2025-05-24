@@ -32,15 +32,13 @@ class Annotator:
             color=sv.Color.from_hex('#00913F'),
         )
         
-    def annotate_frame(self, annotated_frame, all_detections, ball_detections, zones, hoop_detections, esta_dentro):
+    def annotate_frames(self, annotated_frame, all_detections, ball_detections, zones, hoop_detections, esta_dentro):
         annotated_frame = self.ellipse_annotator.annotate(
             scene=annotated_frame,
             detections=all_detections)
         annotated_frame = self.triangle_annotator.annotate(
             scene=annotated_frame,
             detections=ball_detections)
-        
-        
         if esta_dentro:
             annotated_frame = self.corner_annotator_true.annotate(
                 scene=annotated_frame,
@@ -49,8 +47,7 @@ class Annotator:
             annotated_frame = self.corner_annotator.annotate(
                 scene=annotated_frame,
                 detections=hoop_detections)
-
-
+        
         annotated_frame = self.mask_annotator.annotate(
             scene=annotated_frame,
             detections=zones)
