@@ -2,6 +2,8 @@
 
 Este proyecto es una plataforma de análisis de videos de baloncesto que utiliza modelos de detección, clasificación y anotación para extraer información avanzada de partidos y jugadas. Permite identificar jugadores, equipos, balón, árbitros y zonas de la cancha, así como analizar jugadas y visualizar resultados de manera interactiva.
 
+![alt text](./poster.png)
+
 ## Características principales
 
 - **Detección de jugadores, balón, aro y árbitros** usando modelos de visión por computadora.

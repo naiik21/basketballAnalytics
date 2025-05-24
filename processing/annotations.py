@@ -1,5 +1,4 @@
 import supervision as sv
-from config.settings import settings
 from config.constants import Colors, NBA
 import cv2
 import numpy as np
@@ -51,6 +50,8 @@ class Annotator:
         annotated_frame = self.mask_annotator.annotate(
             scene=annotated_frame,
             detections=zones)
+        
+        return annotated_frame
     
     def draw_nba_style_text(self, frame, text, center_x=None, center_y=None):
         """Dibuja texto estilo NBA con animaciones y efectos visuales."""

@@ -1,6 +1,6 @@
 import supervision as sv
 from config.settings import settings
-from config.constants import Colors
+
 
 def setup_video_sources(source_path, target_path, stride=None):
     video_info = sv.VideoInfo.from_video_path(source_path)

@@ -10,7 +10,7 @@ from models.detection import PlayerDetectionModel, FieldDetectionModel, HandlerD
 
 # Procesamiento
 from processing.annotations import Annotator
-from processing.zone_analysis import is_inside, analyze_shooting_zone, real_handler_detections
+from processing.zone_analysis import is_inside
 
 # Utilidades
 from utils.visualization import setup_video_sources, collect_player_crops
@@ -20,11 +20,11 @@ field_model = FieldDetectionModel()
 handler_model = HandlerDetectionModel()
 annotator = Annotator()
 
-SOURCE_VIDEO_PATH="./videos/test/stepback.mp4"
-TARGET_VIDEO_PATH="./videos/result/shastepback_result_3.mp4"
+SOURCE_VIDEO_PATH="./videos/test/shai.mp4"
+TARGET_VIDEO_PATH="./videos/result/shai_result_10.mp4"
 
-active_text = None  # Guarda el texto actual ("3Puntos" o "2Puntos")
-remaining_frames = 0  # Frames restantes para ocultar el texto
+active_text = None 
+remaining_frames = 0 
 
 ball_in_hoop= False
 last_handler=True
@@ -80,44 +80,39 @@ with video_sink:
         handler_detections = detections_handler[detections_handler.class_id == settings.HANDEL]
         
         
-        
-        
-        # ball_in_hoop, real_handler= real_handler_detections(ball_detections, hoop_detections, handler_detections)
-        
+        esta_dentro=False
+        real_handler=[]
         
         try:
             ball_xyxy = ball_detections.xyxy[0]  
         except:
             pass
-                
+                        
         try:
             hoop_xyxy = hoop_detections.xyxy[0]
         except:
             pass
-        
-        esta_dentro=False
-        
+                        
         try:
             esta_dentro = is_inside(ball_xyxy, hoop_xyxy, partial_overlap=False)
         except:
             pass
-        
+                
         if esta_dentro:
             ball_in_hoop=True
-        
+                
         if len(handler_detections) > 0:
             # Encontrar el índice de la detección con mayor confianza
             max_confidence_idx = int(handler_detections.confidence.argmax())
-            
+                    
             # Seleccionar solo esa detección
             handler_detections = handler_detections[max_confidence_idx]
-            
+                    
         try:
             handler_xyxy=handler_detections.xyxy[0]
         except:
             pass
-        
-        real_handler=[]
+                
 
         try:
             esta_tirando= is_inside(handler_xyxy, ball_xyxy)
@@ -125,10 +120,7 @@ with video_sink:
                 real_handler= handler_detections        
         except:
             pass
-        
-        
 
-            
         
         all_detections = sv.Detections.merge([
             players_detections, referees_detections])
@@ -136,44 +128,7 @@ with video_sink:
         all_detections.class_id = all_detections.class_id.astype(int)
 
         annotated_frame = frame.copy()
-        # annotated_frame = annotator.annotate_frames(annotated_frame, all_detections, ball_detections, zones, hoop_detections, esta_dentro)
-        
-        annotated_frame = annotator.ellipse_annotator.annotate(
-            scene=annotated_frame,
-            detections=all_detections)
-        annotated_frame = annotator.triangle_annotator.annotate(
-            scene=annotated_frame,
-            detections=ball_detections)
-        if ball_in_hoop:
-            annotated_frame = annotator.corner_annotator_true.annotate(
-                scene=annotated_frame,
-                detections=hoop_detections)
-        else:
-            annotated_frame = annotator.corner_annotator.annotate(
-                scene=annotated_frame,
-                detections=hoop_detections)
-        
-        annotated_frame = annotator.mask_annotator.annotate(
-            scene=annotated_frame,
-            detections=zones)
-        
-        
-        
-        # shot_type = analyze_shooting_zone(
-        #         annotated_frame, zones, real_handler
-        #     )
-            
-        # # Manejo del texto NBA
-        # if remaining_frames > 0:
-        #     remaining_frames -= 1
-        #     annotator.draw_nba_style_text(annotated_frame, active_text)
-        #     if remaining_frames == 0:
-        #         active_text = None
-        #         ball_in_hoop = False
-        # elif ball_in_hoop and shot_type:
-        #     active_text = shot_type
-        #     remaining_frames = settings.TEXT_DURATION_FRAMES
-        #     ball_in_hoop = False
+        annotated_frame = annotator.annotate_frames(annotated_frame, all_detections, ball_detections, zones, hoop_detections, ball_in_hoop)
 
         try:
             if zones.mask is not None and len(zones.mask) > 0:
@@ -220,5 +175,5 @@ with video_sink:
         except Exception as e:
             print(e)
             pass
-        # sv.plot_image(annotated_frame)
+
         video_sink.write_frame(annotated_frame)
